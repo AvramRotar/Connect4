@@ -1,5 +1,4 @@
-﻿using Connect4New.Classes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -31,6 +30,8 @@ namespace Connect4New
         private bool _isAwaiting = false;
 
         private BackgroundWorker _messageReceiver = new BackgroundWorker();
+
+        private Socket _socket;
 
         private List<List<PictureBoxWithLocation>> _pictureBoxGrid;
 
@@ -111,13 +112,12 @@ namespace Connect4New
             {
                 server = new TcpListener(IPAddress.Parse(adressIp), Convert.ToInt32(port));
                 server.Start();
-                _client = server.AcceptTcpClient();
+                _socket = server.AcceptSocket();
                 label6.Text = "HOST";
                 button1.Enabled = false;
                 cbCuloarePlayer2.Enabled = false;
                 listBoxPlayer2.Enabled = false;
                 textBoxPlayer2NewName.Enabled = false;
-                _messageReceiver.RunWorkerAsync();
             }
             else
             {
@@ -130,6 +130,7 @@ namespace Connect4New
                 {
                     _client = new TcpClient();
                     _client.Connect(IPAddress.Parse(adressIp), Convert.ToInt32(port));
+                    _socket = _client.Client;
                     _messageReceiver.RunWorkerAsync();
                 }
                 catch (Exception ex)
@@ -429,20 +430,18 @@ namespace Connect4New
 
         private void ReceiveMessage()
         {
-            NetworkStream networkStream = _client.GetStream();
             byte[] buffer = new byte[_client.ReceiveBufferSize];
-            int bytesRead = networkStream.Read(buffer, 0, _client.ReceiveBufferSize);
+            int bytesRead = _socket.Receive(buffer, _client.ReceiveBufferSize, SocketFlags.None);
             string opponentsMove = System.Text.Encoding.ASCII.GetString(buffer, 0, bytesRead);
             InterpretMessage(opponentsMove);
         }
 
         private void Send(string msg)
         {
-            NetworkStream networkStream = _client.GetStream();
             ASCIIEncoding encoder = new ASCIIEncoding();
             byte[] buffer = encoder.GetBytes(msg);
-            networkStream.Write(buffer, 0, buffer.Length);
-            networkStream.Flush();
+            _socket.Send(buffer, buffer.Length, SocketFlags.None);
+            _messageReceiver.RunWorkerAsync();
         }
 
         private void UnfreezeBoard()

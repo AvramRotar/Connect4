@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace Connect4New.Classes
+namespace Connect4New
 {
     internal static class Images
     {
