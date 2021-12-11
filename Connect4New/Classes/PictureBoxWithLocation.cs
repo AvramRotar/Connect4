@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Connect4New
 {
-    class PictureBoxWithLocation : PictureBox
+    internal class PictureBoxWithLocation : PictureBox
     {
+        #region Public Properties
+
         public int ColumnIndex { get; set; }
+
         public int LineIndex { get; set; }
+
+        #endregion Public Properties
     }
 }

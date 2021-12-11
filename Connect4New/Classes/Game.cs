@@ -1,24 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Connect4New
 {
-    class Game
+    internal class Game
     {
-        public List<List<Cell>> Grid { get; set; }//O lista de coloane, nu de linii
-        public Player player1 { get; set; }
-        public Player player2 { get; set; }
-        public int Turn { get; set; }
+        #region Public Constructors
 
-        public Game(Player P1, Player P2)
+        public Game(Player p1, Player p2)
         {
-            player1 = P1;
-            player2 = P2;
+            Player1 = p1;
+            Player2 = p2;
             Turn = 1;
             InitGrid();
+        }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public List<List<Cell>> Grid { get; set; }//O lista de coloane, nu de linii
+
+        public Player Player1 { get; set; }
+
+        public Player Player2 { get; set; }
+
+        public int Turn { get; set; }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
+        public State GetNextState(Cell cell)
+        {
+            if (Referee.CheckWinner(Grid, cell))
+            {
+                PlayerWinUpdate();
+                return Referee.WhoWon(Turn);
+            }
+            if (Referee.CheckDraw(Grid))
+            {
+                IncreaseMatches();
+                return State.Draw;
+            }
+
+            return Referee.NextTurn(Turn *= -1);
         }
 
         public int UpdateGrid(int columnIndex)
@@ -30,57 +55,59 @@ namespace Connect4New
                 return lineIndex;
             }
             return -1;
+        }
 
-        }
-        public State GetNextState(Cell cell)
-        {
-            if (Referee.CheckWinner(Grid, cell))
-            {
-                PlayerWinUpdate();
-                return Referee.WhoWon(Turn);
-            }
-            if (Referee.CheckDraw(Grid))
-            {
-                IncreaseMatches();
-                return State.draw;
-            }
-            return Referee.NextTurn(Turn *= -1);
-        }
+        #endregion Public Methods
+
+        #region Private Methods
+
         private int FindCorrectLine(int columnIndex)
         {
-            int lineIndex = Grid[0].Count - 1;
+            var lineIndex = Grid[0].Count - 1;
             while (lineIndex >= 0 && Grid[columnIndex][lineIndex].State != 0)
             {
                 lineIndex--;
             }
+
             return lineIndex;
         }
-        private void PlayerWinUpdate()
-        {
-            if (Turn == 1)
-                player1.Victories++;
-            else
-                player2.Victories++;
-            IncreaseMatches();
-        }
+
         private void IncreaseMatches()
         {
-            player1.Matches++;
-            player2.Matches++;
+            Player1.Matches++;
+            Player2.Matches++;
         }
+
         private void InitGrid()
         {
             Grid = new List<List<Cell>>();
-            for (int columnIndex = 0; columnIndex < GameBoard.totalColumns; columnIndex++)
+            for (int columnIndex = 0; columnIndex < GameBoard.TotalColumns; columnIndex++)
             {
-                List<Cell> column = new List<Cell>();
-                for (int lineIndex = 0; lineIndex < GameBoard.totalLines; lineIndex++)
+                var column = new List<Cell>();
+                for (int lineIndex = 0; lineIndex < GameBoard.TotalLines; lineIndex++)
                 {
-                    Cell cell = new Cell(columnIndex, lineIndex);
+                    var cell = new Cell(columnIndex, lineIndex);
                     column.Add(cell);
                 }
+
                 Grid.Add(column);
             }
         }
+
+        private void PlayerWinUpdate()
+        {
+            if (Turn == 1)
+            {
+                Player1.Victories++;
+            }
+            else
+            {
+                Player2.Victories++;
+            }
+
+            IncreaseMatches();
+        }
+
+        #endregion Private Methods
     }
 }
