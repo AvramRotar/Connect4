@@ -64,7 +64,7 @@ namespace Connect4New
         {
             get
             {
-                return cbCuloarePlayer1.GetItemText(listBoxPlayer1.SelectedItem);
+                return cbCuloarePlayer1.GetItemText(cbCuloarePlayer1.SelectedItem);
             }
         }
 
@@ -72,7 +72,7 @@ namespace Connect4New
         {
             get
             {
-                return cbCuloarePlayer2.GetItemText(listBoxPlayer1.SelectedItem);
+                return cbCuloarePlayer2.GetItemText(cbCuloarePlayer2.SelectedItem);
             }
         }
 
@@ -96,7 +96,7 @@ namespace Connect4New
         {
             get
             {
-                return listBoxPlayer1.GetItemText(listBoxPlayer1.SelectedItem);
+                return listBoxPlayer2.GetItemText(listBoxPlayer2.SelectedItem);
             }
         }
 
@@ -430,8 +430,8 @@ namespace Connect4New
 
         private void ReceiveMessage()
         {
-            byte[] buffer = new byte[_client.ReceiveBufferSize];
-            int bytesRead = _socket.Receive(buffer, _client.ReceiveBufferSize, SocketFlags.None);
+            byte[] buffer = new byte[_socket.ReceiveBufferSize];
+            int bytesRead = _socket.Receive(buffer, _socket.ReceiveBufferSize, SocketFlags.None);
             string opponentsMove = System.Text.Encoding.ASCII.GetString(buffer, 0, bytesRead);
             InterpretMessage(opponentsMove);
         }
