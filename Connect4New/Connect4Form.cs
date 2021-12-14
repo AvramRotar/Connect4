@@ -478,7 +478,14 @@ namespace Connect4New
                         textBoxMessage.Text = GameStatusMessage.GetWin(_board.Game.Player1.Name);
                         WritePlayersData();
                         panelGrid.Enabled = false;
-                        MessageBox.Show($"Congratulations, you won {_board.Game.Player1.Name}", "WINNER");
+                        if (_isHost)
+                        {
+                            MessageBox.Show($"Congratulations, you won {_board.Game.Player1.Name}", "WINNER");
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Aww no, you lost {_board.Game.Player2.Name}","LOSER");
+                        }
                         break;
                     }
                 case State.WinPlayer2:
@@ -487,7 +494,14 @@ namespace Connect4New
                         textBoxMessage.Text = GameStatusMessage.GetWin(_board.Game.Player2.Name);
                         WritePlayersData();
                         panelGrid.Enabled = false;
-                        MessageBox.Show($"Congratulations, you won {_board.Game.Player2.Name}", "WINNER");
+                        if (_isHost)
+                        {
+                            MessageBox.Show($"Aww no, you lost {_board.Game.Player1.Name}", "LOSER");
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Congratulations, you won {_board.Game.Player2.Name}", "WINNER");
+                        }
                         break;
                     }
                 case State.Draw:
