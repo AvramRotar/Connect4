@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Classes\GameBoard.cs" />
     <Compile Include="Classes\Cell.cs" />
+    <Compile Include="Classes\Images.cs" />
     <Compile Include="Classes\State.cs" />
     <Compile Include="Classes\Game.cs" />
     <Compile Include="Classes\GameStatusMessage.cs" />

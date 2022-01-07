@@ -1,22 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Connect4New
+﻿namespace Connect4New
 {
-    class Player
+    internal class Player
     {
-        public string Name { get; set; }
-        public int Victories { get; set; }
-        public int Matches { get; set; }
+        #region Public Constructors
+
         public Player(string name)
         {
             Name = name;
             Victories = 0;
             Matches = 0;
         }
-        public Player() { }
+
+        public Player()
+        {
+        }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public int Matches { get; set; }
+
+        public string Name { get; set; }
+
+        public int Victories { get; set; }
+
+        #endregion Public Properties
     }
 }

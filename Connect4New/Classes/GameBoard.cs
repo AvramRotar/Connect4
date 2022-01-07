@@ -1,23 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect4New
 {
-    class GameBoard
+    internal class GameBoard
     {
 
-        public Game Game { get; set; }
-        private List<Player> players1;
-        public const int totalLines = 6;
-        public const int totalColumns = 7;
-        private Random rnd;
+        #region Public Fields
+
+        public const int TotalColumns = 7;
+
+        public const int TotalLines = 6;
+
+        #endregion Public Fields
+
+        #region Private Fields
+
+        private List<Player> _players;
+
+        private Random _rnd;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
         public GameBoard()
         {
-            players1 = new List<Player>();
-            rnd = new Random();
+            _players = new List<Player>();
+            _rnd = new Random();
+        }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public Game Game { get; set; }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
+        public Player GetOrAddPlayer(string nameToAdd)
+        {
+            if (string.IsNullOrEmpty(nameToAdd))
+            {
+                nameToAdd = GetRandomName(0, 100);
+            }
+
+            var player = _players.FirstOrDefault(p => p.Name == nameToAdd);
+            if (player == null)
+            {
+                player = new Player(nameToAdd);
+                _players.Add(player);
+            }
+
+            return player;
         }
 
         public void StartGame(string p1, string p2)
@@ -25,24 +63,15 @@ namespace Connect4New
             Game = new Game(GetOrAddPlayer(p1), GetOrAddPlayer(p2));
         }
 
-        public Player GetOrAddPlayer(string nameToAdd)
+        #endregion Public Methods
+
+        #region Private Methods
+
+        private string GetRandomName(int start, int end)
         {
-            if (string.IsNullOrEmpty(nameToAdd))
-                nameToAdd = GetRandomName(0, 100);
-
-            var player = players1.FirstOrDefault(p => p.Name == nameToAdd);
-            if (player == null)
-            {
-                player = new Player(nameToAdd);
-                players1.Add(player);
-            }
-
-            return player;
+            return "Player" + Convert.ToString(_rnd.Next(start, end));
         }
 
-        private string GetRandomName(int start, int end)//creaza un nume nou pentru lista de jucatori
-        {
-            return "Player" + Convert.ToString(rnd.Next(start, end));
-        }
+        #endregion Private Methods
     }
 }

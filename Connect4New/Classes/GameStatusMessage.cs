@@ -1,32 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Connect4New
+﻿namespace Connect4New
 {
-    class GameStatusMessage
+    internal class GameStatusMessage
     {
-        private static string invalidMove = "Invalid move";
+        #region Private Fields
 
-        private static string draw = "Draw";
+        private static readonly string _draw = "Draw";
 
-        private static string win = "Win by ";
+        private static readonly string _invalidMove = "Invalid move";
+
+        private static readonly string _win = "Win by {0}";
+
+        #endregion Private Fields
+
+        #region Public Methods
+
+        public static string GetDraw()
+        {
+            return _draw;
+        }
 
         public static string GetInvalidMoveMessage()
         {
-            return invalidMove;
+            return _invalidMove;
         }
 
         public static string GetWin(string player)
         {
-            return win + player;
+            return string.Format(_win, player);
         }
 
-        public static string GetDraw()
-        {
-            return draw;
-        }
+        #endregion Public Methods
     }
 }
