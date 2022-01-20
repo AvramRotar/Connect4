@@ -230,17 +230,18 @@ namespace Connect4New
                 return;
             }
             _currentColumnIndex = ((PictureBoxWithLocation)sender).ColumnIndex;
+
             _columnFull = false;
             MakeMove(_currentColumnIndex);
 
             if (!_columnFull)
             {
-                FreezeBoard();  /// se face freeze board si in cazul in se apasa pe o coloana plina si nu se poate trimite alta mutare.
+                FreezeBoard();
                 Send($"move:{_currentColumnIndex}");
             }
             else
             {
-                MessageBox.Show("make another move");
+                MessageBox.Show("Make a valid move.");
                 return;
             }
         }
@@ -285,7 +286,6 @@ namespace Connect4New
                 _pictureBoxGrid.Add(pictureBoxColumn);
             }
 
-            
             WritePlayersData();
             textBoxMessage.Text = _board.Game.Player1.Name;
             pictureBoxTurn.Image = _colorChosenp1;
