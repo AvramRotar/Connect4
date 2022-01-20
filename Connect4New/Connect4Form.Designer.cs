@@ -46,8 +46,8 @@
             this.textBoxPlayer2NewName = new System.Windows.Forms.TextBox();
             this.listBoxPlayer1 = new System.Windows.Forms.ListBox();
             this.listBoxPlayer2 = new System.Windows.Forms.ListBox();
-            this.buttonAddPlayer = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonAddPlayer1 = new System.Windows.Forms.Button();
+            this.buttonAddPlayer2 = new System.Windows.Forms.Button();
             this.textBoxPlayer1Name = new System.Windows.Forms.TextBox();
             this.textBoxPlayer2Name = new System.Windows.Forms.TextBox();
             this.cbCuloarePlayer1 = new System.Windows.Forms.ComboBox();
@@ -96,7 +96,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(0, 326);
+            this.label1.Location = new System.Drawing.Point(27, 324);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(49, 19);
             this.label1.TabIndex = 8;
@@ -106,7 +106,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.label2.Location = new System.Drawing.Point(1, 352);
+            this.label2.Location = new System.Drawing.Point(28, 350);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(67, 19);
             this.label2.TabIndex = 9;
@@ -116,7 +116,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.label3.Location = new System.Drawing.Point(0, 378);
+            this.label3.Location = new System.Drawing.Point(27, 376);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(68, 19);
             this.label3.TabIndex = 10;
@@ -126,7 +126,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.label8.Location = new System.Drawing.Point(639, 376);
+            this.label8.Location = new System.Drawing.Point(638, 376);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(68, 19);
             this.label8.TabIndex = 15;
@@ -136,7 +136,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.label9.Location = new System.Drawing.Point(640, 350);
+            this.label9.Location = new System.Drawing.Point(639, 350);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(67, 19);
             this.label9.TabIndex = 14;
@@ -146,7 +146,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(640, 326);
+            this.label10.Location = new System.Drawing.Point(639, 326);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(49, 19);
             this.label10.TabIndex = 13;
@@ -161,7 +161,7 @@
             // 
             // textBoxPlayer1Matches
             // 
-            this.textBoxPlayer1Matches.Location = new System.Drawing.Point(78, 351);
+            this.textBoxPlayer1Matches.Location = new System.Drawing.Point(105, 349);
             this.textBoxPlayer1Matches.Name = "textBoxPlayer1Matches";
             this.textBoxPlayer1Matches.ReadOnly = true;
             this.textBoxPlayer1Matches.Size = new System.Drawing.Size(65, 20);
@@ -169,7 +169,7 @@
             // 
             // textBoxPlayer1Victories
             // 
-            this.textBoxPlayer1Victories.Location = new System.Drawing.Point(78, 377);
+            this.textBoxPlayer1Victories.Location = new System.Drawing.Point(105, 375);
             this.textBoxPlayer1Victories.Name = "textBoxPlayer1Victories";
             this.textBoxPlayer1Victories.ReadOnly = true;
             this.textBoxPlayer1Victories.Size = new System.Drawing.Size(65, 20);
@@ -177,7 +177,7 @@
             // 
             // textBoxPlayer2Victories
             // 
-            this.textBoxPlayer2Victories.Location = new System.Drawing.Point(718, 375);
+            this.textBoxPlayer2Victories.Location = new System.Drawing.Point(717, 375);
             this.textBoxPlayer2Victories.Name = "textBoxPlayer2Victories";
             this.textBoxPlayer2Victories.ReadOnly = true;
             this.textBoxPlayer2Victories.Size = new System.Drawing.Size(65, 20);
@@ -185,7 +185,7 @@
             // 
             // textBoxPlayer2Matches
             // 
-            this.textBoxPlayer2Matches.Location = new System.Drawing.Point(718, 349);
+            this.textBoxPlayer2Matches.Location = new System.Drawing.Point(717, 349);
             this.textBoxPlayer2Matches.Name = "textBoxPlayer2Matches";
             this.textBoxPlayer2Matches.ReadOnly = true;
             this.textBoxPlayer2Matches.Size = new System.Drawing.Size(65, 20);
@@ -200,45 +200,47 @@
             // 
             // listBoxPlayer1
             // 
+            this.listBoxPlayer1.BackColor = System.Drawing.Color.White;
             this.listBoxPlayer1.FormattingEnabled = true;
-            this.listBoxPlayer1.Location = new System.Drawing.Point(23, 45);
+            this.listBoxPlayer1.Location = new System.Drawing.Point(41, 32);
             this.listBoxPlayer1.Name = "listBoxPlayer1";
-            this.listBoxPlayer1.Size = new System.Drawing.Size(120, 95);
+            this.listBoxPlayer1.Size = new System.Drawing.Size(129, 95);
             this.listBoxPlayer1.TabIndex = 27;
             this.listBoxPlayer1.SelectedIndexChanged += new System.EventHandler(this.listBoxPlayer1_SelectedIndexChanged);
             // 
             // listBoxPlayer2
             // 
+            this.listBoxPlayer2.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.listBoxPlayer2.FormattingEnabled = true;
-            this.listBoxPlayer2.Location = new System.Drawing.Point(663, 45);
+            this.listBoxPlayer2.Location = new System.Drawing.Point(643, 32);
             this.listBoxPlayer2.Name = "listBoxPlayer2";
-            this.listBoxPlayer2.Size = new System.Drawing.Size(120, 95);
+            this.listBoxPlayer2.Size = new System.Drawing.Size(139, 95);
             this.listBoxPlayer2.TabIndex = 28;
             this.listBoxPlayer2.SelectedIndexChanged += new System.EventHandler(this.listBoxPlayer2_SelectedIndexChanged);
             // 
-            // buttonAddPlayer
+            // buttonAddPlayer1
             // 
-            this.buttonAddPlayer.Location = new System.Drawing.Point(186, 36);
-            this.buttonAddPlayer.Name = "buttonAddPlayer";
-            this.buttonAddPlayer.Size = new System.Drawing.Size(75, 23);
-            this.buttonAddPlayer.TabIndex = 29;
-            this.buttonAddPlayer.Text = "Add player";
-            this.buttonAddPlayer.UseVisualStyleBackColor = true;
-            this.buttonAddPlayer.Click += new System.EventHandler(this.buttonAddPlayerToFirstList_Click);
+            this.buttonAddPlayer1.Location = new System.Drawing.Point(186, 36);
+            this.buttonAddPlayer1.Name = "buttonAddPlayer1";
+            this.buttonAddPlayer1.Size = new System.Drawing.Size(75, 23);
+            this.buttonAddPlayer1.TabIndex = 29;
+            this.buttonAddPlayer1.Text = "Add player";
+            this.buttonAddPlayer1.UseVisualStyleBackColor = true;
+            this.buttonAddPlayer1.Click += new System.EventHandler(this.buttonAddPlayerToFirstList_Click);
             // 
-            // button1
+            // buttonAddPlayer2
             // 
-            this.button1.Location = new System.Drawing.Point(548, 36);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 30;
-            this.button1.Text = "Add player";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.buttonAddPlayerToSecondList_Click_1);
+            this.buttonAddPlayer2.Location = new System.Drawing.Point(548, 36);
+            this.buttonAddPlayer2.Name = "buttonAddPlayer2";
+            this.buttonAddPlayer2.Size = new System.Drawing.Size(75, 23);
+            this.buttonAddPlayer2.TabIndex = 30;
+            this.buttonAddPlayer2.Text = "Add player";
+            this.buttonAddPlayer2.UseVisualStyleBackColor = true;
+            this.buttonAddPlayer2.Click += new System.EventHandler(this.buttonAddPlayerToSecondList_Click_1);
             // 
             // textBoxPlayer1Name
             // 
-            this.textBoxPlayer1Name.Location = new System.Drawing.Point(78, 325);
+            this.textBoxPlayer1Name.Location = new System.Drawing.Point(105, 323);
             this.textBoxPlayer1Name.Name = "textBoxPlayer1Name";
             this.textBoxPlayer1Name.ReadOnly = true;
             this.textBoxPlayer1Name.Size = new System.Drawing.Size(65, 20);
@@ -246,7 +248,7 @@
             // 
             // textBoxPlayer2Name
             // 
-            this.textBoxPlayer2Name.Location = new System.Drawing.Point(718, 323);
+            this.textBoxPlayer2Name.Location = new System.Drawing.Point(717, 323);
             this.textBoxPlayer2Name.Name = "textBoxPlayer2Name";
             this.textBoxPlayer2Name.ReadOnly = true;
             this.textBoxPlayer2Name.Size = new System.Drawing.Size(65, 20);
@@ -254,6 +256,7 @@
             // 
             // cbCuloarePlayer1
             // 
+            this.cbCuloarePlayer1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.cbCuloarePlayer1.FormattingEnabled = true;
             this.cbCuloarePlayer1.Items.AddRange(new object[] {
             "blue",
@@ -264,7 +267,7 @@
             "yellow",
             "violet",
             "pink"});
-            this.cbCuloarePlayer1.Location = new System.Drawing.Point(23, 265);
+            this.cbCuloarePlayer1.Location = new System.Drawing.Point(41, 192);
             this.cbCuloarePlayer1.Name = "cbCuloarePlayer1";
             this.cbCuloarePlayer1.Size = new System.Drawing.Size(120, 21);
             this.cbCuloarePlayer1.TabIndex = 33;
@@ -272,6 +275,7 @@
             // 
             // cbCuloarePlayer2
             // 
+            this.cbCuloarePlayer2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.cbCuloarePlayer2.FormattingEnabled = true;
             this.cbCuloarePlayer2.Items.AddRange(new object[] {
             "blue",
@@ -282,7 +286,7 @@
             "yellow",
             "violet",
             "pink"});
-            this.cbCuloarePlayer2.Location = new System.Drawing.Point(663, 265);
+            this.cbCuloarePlayer2.Location = new System.Drawing.Point(654, 192);
             this.cbCuloarePlayer2.Name = "cbCuloarePlayer2";
             this.cbCuloarePlayer2.Size = new System.Drawing.Size(120, 21);
             this.cbCuloarePlayer2.TabIndex = 34;
@@ -291,7 +295,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(38, 238);
+            this.label4.Location = new System.Drawing.Point(51, 162);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(93, 13);
             this.label4.TabIndex = 35;
@@ -300,7 +304,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(660, 238);
+            this.label5.Location = new System.Drawing.Point(669, 162);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(93, 13);
             this.label5.TabIndex = 36;
@@ -309,7 +313,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(38, 13);
+            this.label6.Location = new System.Drawing.Point(51, 9);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(35, 13);
             this.label6.TabIndex = 38;
@@ -327,8 +331,8 @@
             this.Controls.Add(this.cbCuloarePlayer1);
             this.Controls.Add(this.textBoxPlayer2Name);
             this.Controls.Add(this.textBoxPlayer1Name);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.buttonAddPlayer);
+            this.Controls.Add(this.buttonAddPlayer2);
+            this.Controls.Add(this.buttonAddPlayer1);
             this.Controls.Add(this.listBoxPlayer2);
             this.Controls.Add(this.listBoxPlayer1);
             this.Controls.Add(this.textBoxPlayer2Victories);
@@ -347,6 +351,7 @@
             this.Controls.Add(this.textBoxMessage);
             this.Controls.Add(this.buttonStart);
             this.Controls.Add(this.panelGrid);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Connect4Form";
             this.Text = "CONNECT 4  ";
             this.Load += new System.EventHandler(this.Connect4Form_Load);
@@ -376,8 +381,8 @@
         private System.Windows.Forms.TextBox textBoxPlayer2NewName;
         private System.Windows.Forms.ListBox listBoxPlayer1;
         private System.Windows.Forms.ListBox listBoxPlayer2;
-        private System.Windows.Forms.Button buttonAddPlayer;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonAddPlayer1;
+        private System.Windows.Forms.Button buttonAddPlayer2;
         private System.Windows.Forms.TextBox textBoxPlayer1Name;
         private System.Windows.Forms.TextBox textBoxPlayer2Name;
         private System.Windows.Forms.ComboBox cbCuloarePlayer1;

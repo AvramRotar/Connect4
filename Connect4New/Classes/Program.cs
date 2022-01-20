@@ -1,5 +1,7 @@
-﻿using System;
+﻿
+using System;
 using System.Windows.Forms;
+
 
 namespace Connect4New
 {
@@ -15,10 +17,10 @@ namespace Connect4New
         static void Main()
         {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.SetCompatibleTextRenderingDefault(false); 
+            Application.Run(new StartupForm());
         }
-
+        
         #endregion Private Methods
 
     }

@@ -3,11 +3,11 @@ using System.Windows.Forms;
 
 namespace Connect4New
 {
-    public partial class Form1 : Form
+    public partial class StartupForm : Form
     {
         #region Public Constructors
 
-        public Form1()
+        public StartupForm()
         {
             InitializeComponent();
         }
@@ -16,12 +16,12 @@ namespace Connect4New
 
         #region Private Methods
 
-        private void button1_Click(object sender, EventArgs e)
+        private void connectbtn_Click(object sender, EventArgs e)
         {
-            this.Hide();
+            Hide();
             Connect4Form newForm = new Connect4Form(isHostCheckBox.Checked);
-            newForm.StartConnection(textBox2.Text, textBox3.Text);
-            newForm.ShowDialog();
+            newForm.StartConnection(textBoxIP.Text, textBoxPort.Text);
+            newForm.ShowDialog();   ///// catch excepcion cand nu reuseste sa se conecteze
         }
 
         #endregion Private Methods

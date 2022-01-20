@@ -29,6 +29,8 @@ namespace Connect4New
 
         private bool _isAwaiting = false;
 
+        private bool _columnFull = false;
+
         private BackgroundWorker _messageReceiver = new BackgroundWorker();
 
         private Socket _socket;
@@ -43,7 +45,7 @@ namespace Connect4New
         {
             InitializeComponent();
             _board = new GameBoard();
-            this._isHost = isHost;
+            this._isHost = isHost; // assign the parameter isHost to the field _isHost for this instance
             CheckForIllegalCrossThreadCalls = false;
             pictureBoxTurn.Image = Images.White;
             textBoxMessage.Text = "Add a player and select a color";
@@ -114,7 +116,7 @@ namespace Connect4New
                 server.Start();
                 _socket = server.AcceptSocket();
                 label6.Text = "HOST";
-                button1.Enabled = false;
+                buttonAddPlayer2.Enabled = false;
                 cbCuloarePlayer2.Enabled = false;
                 listBoxPlayer2.Enabled = false;
                 textBoxPlayer2NewName.Enabled = false;
@@ -122,7 +124,7 @@ namespace Connect4New
             else
             {
                 label6.Text = "CLIENT";
-                buttonAddPlayer.Enabled = false;
+                buttonAddPlayer1.Enabled = false;
                 cbCuloarePlayer1.Enabled = false;
                 listBoxPlayer1.Enabled = false;
                 textBoxPlayer1NewName.Enabled = false;
@@ -227,13 +229,20 @@ namespace Connect4New
                 MessageBox.Show("Not your turn.");
                 return;
             }
-
             _currentColumnIndex = ((PictureBoxWithLocation)sender).ColumnIndex;
-            FreezeBoard();
-
-            Send($"move:{_currentColumnIndex}");
-
+            _columnFull = false;
             MakeMove(_currentColumnIndex);
+
+            if (!_columnFull)
+            {
+                FreezeBoard();  /// se face freeze board si in cazul in se apasa pe o coloana plina si nu se poate trimite alta mutare.
+                Send($"move:{_currentColumnIndex}");
+            }
+            else
+            {
+                MessageBox.Show("make another move");
+                return;
+            }
         }
 
         private void Connect4Form_Load(object sender, EventArgs e)
@@ -276,6 +285,7 @@ namespace Connect4New
                 _pictureBoxGrid.Add(pictureBoxColumn);
             }
 
+            
             WritePlayersData();
             textBoxMessage.Text = _board.Game.Player1.Name;
             pictureBoxTurn.Image = _colorChosenp1;
@@ -382,8 +392,8 @@ namespace Connect4New
 
                         break;
                     }
-                default:
-                    break;
+                  default:
+                  break;
             }
         }
 
@@ -414,6 +424,7 @@ namespace Connect4New
             if (currentLineIndex == -1)
             {
                 MessageBox.Show(GameStatusMessage.GetInvalidMoveMessage(), "That column is full!");
+                _columnFull = true;
             }
             else
             {
