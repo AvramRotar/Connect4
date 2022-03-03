@@ -47,8 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\GameBoard.cs" />
-    <Compile Include="Classes\Cell.cs" />
+    <Compile Include="Classes\PlayerStatistics.cs" />
+    <Compile Include="Classes\Connect4Board.cs" />
+    <Compile Include="Classes\Connect4Cell.cs" />
     <Compile Include="Classes\Images.cs" />
     <Compile Include="Classes\State.cs" />
     <Compile Include="Classes\Game.cs" />

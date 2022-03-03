@@ -21,7 +21,7 @@ namespace Connect4New
             Hide();
             Connect4Form newForm = new Connect4Form(isHostCheckBox.Checked);
             newForm.StartConnection(textBoxIP.Text, textBoxPort.Text);
-            newForm.ShowDialog();   ///// catch excepcion cand nu reuseste sa se conecteze
+            newForm.ShowDialog();   ///// catch exception cand nu reuseste sa se conecteze
         }
 
         #endregion Private Methods

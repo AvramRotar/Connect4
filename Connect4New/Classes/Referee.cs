@@ -6,12 +6,12 @@ namespace Connect4New
     {
         #region Public Methods
 
-        public static bool CheckDraw(List<List<Cell>> grid)
+        public static bool CheckDraw(List<List<Connect4Cell>> grid)
         {
             return Rules.Draw(grid);
         }
 
-        public static bool CheckWinner(List<List<Cell>> grid, Cell cell)
+        public static bool CheckWinner(List<List<Connect4Cell>> grid, Connect4Cell cell)
         {
             if (Rules.MainDiagonalWin(grid, cell))
             {
@@ -33,7 +33,7 @@ namespace Connect4New
             return false;
         }
 
-        public static bool ColumnNotFull(List<List<Cell>> grid, int column)
+        public static bool ColumnNotFull(List<List<Connect4Cell>> grid, int column)
         {
             return Rules.ValidColumn(grid, column);
         }

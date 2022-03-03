@@ -1,10 +1,10 @@
 ﻿namespace Connect4New
 {
-    internal class Cell
+    internal class Connect4Cell
     {
         #region Public Constructors
 
-        public Cell(int column, int line)  //Connect4Cell
+        public Connect4Cell(int column, int line)  
         {
             ColumnIndex = column;
             LineIndex = line;
@@ -15,11 +15,11 @@
 
         #region Public Properties
 
-        public int ColumnIndex { get; }  
+        public int ColumnIndex { get; } 
 
         public int LineIndex { get; }
 
-        public int State { get; set; } // sa fie enum
+        public int State { get; set; } // ar trebui sa fie un enum.
 
         #endregion Public Properties
     }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Connect4New
 {
@@ -6,40 +8,63 @@ namespace Connect4New
     {
         #region Public Constructors
 
-        public Game(Player p1, Player p2)
+        public Game()
         {
-            Player1 = p1;
-            Player2 = p2;
-            Turn = 1;
-            InitGrid();
+            _players = new List<Player>();
+            _rnd = new Random();
+            _board = new Connect4Board();
         }
 
         #endregion Public Constructors
 
         #region Public Properties
+     
+        public List<List<Connect4Cell>> Grid { get { return _board.Grid; } }
 
-        public List<List<Cell>> Grid { get; set; }//O lista de coloane, nu de linii
-
-        public Player Player1 { get; set; }
+        public Player Player1 { get; set; } 
 
         public Player Player2 { get; set; }
 
-        public int Turn { get; set; }
+        public int Turn { get; private set; }
 
         #endregion Public Properties
 
+        private List<Player> _players;
+       
+        private Random _rnd;
+       
+        private Connect4Board _board;
+
         #region Public Methods
 
-        public State GetNextState(Cell cell)
+        public void InitGame(Player p1, Player p2)
+        {
+            Player1 = p1;
+            Player2 = p2;
+            Turn = 1;
+        }
+
+        public State GetNextState(Connect4Cell cell)  
         {
             if (Referee.CheckWinner(Grid, cell))
             {
-                PlayerWinUpdate();
+                if (Turn == 1)
+                {
+                    Player1.Statistics.Victories++;
+                }
+                else
+                {
+                    Player2.Statistics.Victories++;
+                }
+
+                Player1.Statistics.Matches++;
+                Player2.Statistics.Matches++;
                 return Referee.WhoWon(Turn);
             }
             if (Referee.CheckDraw(Grid))
             {
-                IncreaseMatches();
+                Player1.Statistics.Matches++;
+                Player2.Statistics.Matches++;
                 return State.Draw;
             }
 
@@ -57,6 +82,23 @@ namespace Connect4New
             return -1;
         }
 
+        public Player GetOrAddPlayer(string nameToAdd) 
+        {
+            if (string.IsNullOrEmpty(nameToAdd))
+            {
+                nameToAdd = GetRandomName(0, 100);
+            }
+
+            var player = _players.FirstOrDefault(p => p.Name == nameToAdd);
+            if (player == null)
+            {
+                player = new Player(nameToAdd);
+                _players.Add(player);
+            }
+
+            return player;
+        }
+
         #endregion Public Methods
 
         #region Private Methods
@@ -72,42 +114,10 @@ namespace Connect4New
             return lineIndex;
         }
 
-        private void IncreaseMatches()
+        private string GetRandomName(int start, int end)
         {
-            Player1.Matches++;
-            Player2.Matches++;
+            return "Player" + Convert.ToString(_rnd.Next(start, end));
         }
-
-        private void InitGrid()
-        {
-            Grid = new List<List<Cell>>();
-            for (int columnIndex = 0; columnIndex < GameBoard.TotalColumns; columnIndex++)
-            {
-                var column = new List<Cell>();
-                for (int lineIndex = 0; lineIndex < GameBoard.TotalLines; lineIndex++)
-                {
-                    var cell = new Cell(columnIndex, lineIndex);
-                    column.Add(cell);
-                }
-
-                Grid.Add(column);
-            }
-        }
-
-        private void PlayerWinUpdate()
-        {
-            if (Turn == 1)
-            {
-                Player1.Victories++;
-            }
-            else
-            {
-                Player2.Victories++;
-            }
-
-            IncreaseMatches();
-        }
-
         #endregion Private Methods
     }
 }
