@@ -206,7 +206,7 @@
             this.listBoxPlayer1.Name = "listBoxPlayer1";
             this.listBoxPlayer1.Size = new System.Drawing.Size(129, 95);
             this.listBoxPlayer1.TabIndex = 27;
-            this.listBoxPlayer1.SelectedIndexChanged += new System.EventHandler(this.listBoxPlayer1_SelectedIndexChanged);
+            this.listBoxPlayer1.SelectedIndexChanged += new System.EventHandler(this.ListBoxPlayer1_SelectedIndexChanged);
             // 
             // listBoxPlayer2
             // 
@@ -216,7 +216,7 @@
             this.listBoxPlayer2.Name = "listBoxPlayer2";
             this.listBoxPlayer2.Size = new System.Drawing.Size(139, 95);
             this.listBoxPlayer2.TabIndex = 28;
-            this.listBoxPlayer2.SelectedIndexChanged += new System.EventHandler(this.listBoxPlayer2_SelectedIndexChanged);
+            this.listBoxPlayer2.SelectedIndexChanged += new System.EventHandler(this.ListBoxPlayer2_SelectedIndexChanged);
             // 
             // buttonAddPlayer1
             // 

@@ -12,7 +12,7 @@ namespace Connect4New
         {
             _players = new List<Player>();
             _rnd = new Random();
-            _board = new Connect4Board();
+            
         }
 
         #endregion Public Constructors
@@ -42,6 +42,7 @@ namespace Connect4New
             Player1 = p1;
             Player2 = p2;
             Turn = 1;
+            _board = new Connect4Board();
         }
 
         public State GetNextState(Connect4Cell cell)  
@@ -57,20 +58,18 @@ namespace Connect4New
                     Player2.Statistics.Victories++;
                 }
 
-                Player1.Statistics.Matches++;
-                Player2.Statistics.Matches++;
+                IncreaseMatches();
                 return Referee.WhoWon(Turn);
             }
             if (Referee.CheckDraw(Grid))
             {
-                Player1.Statistics.Matches++;
-                Player2.Statistics.Matches++;
+                IncreaseMatches();
                 return State.Draw;
             }
 
             return Referee.NextTurn(Turn *= -1);
         }
-
+       
         public int UpdateGrid(int columnIndex)
         {
             if (Grid[columnIndex][0].State == 0)
@@ -103,7 +102,13 @@ namespace Connect4New
 
         #region Private Methods
 
-        private int FindCorrectLine(int columnIndex)
+        private void IncreaseMatches()
+        {
+            Player1.Statistics.Matches++;
+            Player2.Statistics.Matches++;
+        }
+
+        public int FindCorrectLine(int columnIndex)
         {
             var lineIndex = Grid[0].Count - 1;
             while (lineIndex >= 0 && Grid[columnIndex][lineIndex].State != 0)

@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Threading;
 
 namespace Connect4New
 {
@@ -15,7 +16,7 @@ namespace Connect4New
 
         private readonly bool _isHost;
 
-        private Game Game;
+        private Game _game;
 
         private TcpClient _client;
 
@@ -29,10 +30,8 @@ namespace Connect4New
 
         private bool _isAwaiting = false;
 
-        private bool _columnFull = false;
-
         private BackgroundWorker _messageReceiver = new BackgroundWorker();
-
+       
         private Socket _socket;
 
         private List<List<PictureBoxWithLocation>> _pictureBoxGrid;
@@ -45,21 +44,29 @@ namespace Connect4New
         {
             InitializeComponent();
            // _board = new Connect4Board();
-            Game = new Game();
+            _game = new Game();
             this._isHost = isHost; // assign the parameter isHost to the field _isHost for this instance
             CheckForIllegalCrossThreadCalls = false;
             pictureBoxTurn.Image = Images.White;
             textBoxMessage.Text = "Add a player and select a color";
             _messageReceiver.DoWork += MessageReceiver_DoWork;
+            _messageReceiver.WorkerSupportsCancellation = true;
         }
 
         #endregion Public Constructors
+
+        #region Private Delegates
+
+        private delegate bool StateChecker();
+
+        #endregion
 
         #region Public Delegates
 
         public delegate void BoardUpdate();
 
         #endregion Public Delegates
+
 
         #region Private Properties
 
@@ -83,7 +90,7 @@ namespace Connect4New
         {
             get
             {
-                return _isHost ? this.Game.Turn == 1 : this.Game.Turn != 1;
+                return _isHost ? this._game.Turn == 1 : this._game.Turn != 1;
             }
         }
 
@@ -110,7 +117,7 @@ namespace Connect4New
         public void StartGame(string p1, string p2)
         {
             // Game = new Game(GetOrAddPlayer(p1), GetOrAddPlayer(p2));
-            Game.InitGame(Game.GetOrAddPlayer(p1), Game.GetOrAddPlayer(p2));
+            _game.InitGame(_game.GetOrAddPlayer(p1), _game.GetOrAddPlayer(p2));
         }
         public void StartConnection(string adressIp, string port)
         {
@@ -156,7 +163,7 @@ namespace Connect4New
         private void buttonAddPlayerToFirstList_Click(object sender, EventArgs e)  //Adauga un jucator in lista de afisare din stanga
         {
             string nameToFind = textBoxPlayer1NewName.Text;
-            nameToFind =Game.GetOrAddPlayer(nameToFind).Name;
+            nameToFind =_game.GetOrAddPlayer(nameToFind).Name;
             if (!listBoxPlayer1.Items.Contains(nameToFind))
             {
                 listBoxPlayer1.Items.Add(nameToFind);
@@ -166,7 +173,7 @@ namespace Connect4New
         private void buttonAddPlayerToSecondList_Click_1(object sender, EventArgs e)  //Adauga un jucator in lista de afisare din dreapta
         {
             string nameToFind = textBoxPlayer2NewName.Text;
-            nameToFind = Game.GetOrAddPlayer(nameToFind).Name;
+            nameToFind = _game.GetOrAddPlayer(nameToFind).Name;
             if (!listBoxPlayer2.Items.Contains(nameToFind))
             {
                 listBoxPlayer2.Items.Add(nameToFind);
@@ -232,25 +239,13 @@ namespace Connect4New
 
         private void Cell_Click(object sender, EventArgs e)
         {
-            if (!_isMyTurn)
-            {
-                MessageBox.Show("Not your turn.");
-                return;
-            }
             _currentColumnIndex = ((PictureBoxWithLocation)sender).ColumnIndex;
 
-            _columnFull = false;
-            MakeMove(_currentColumnIndex);
-
-            if (!_columnFull)
+            if (ValidateMove(_currentColumnIndex) == true)
             {
+                MakeMove(_currentColumnIndex);
                 FreezeBoard();
                 Send($"move:{_currentColumnIndex}");
-            }
-            else
-            {
-                MessageBox.Show("Make a valid move.");
-                return;
             }
         }
 
@@ -264,8 +259,8 @@ namespace Connect4New
             panelGrid.Enabled = true;
             panelGrid.Controls.Clear();
 
-            var lineLenght = Game.Grid[0].Count;
-            var columnLenght = Game.Grid.Count;
+            var lineLenght = _game.Grid[0].Count;
+            var columnLenght = _game.Grid.Count;
             var pictureHeight = panelGrid.Size.Height / lineLenght;
             var pictureWidth = panelGrid.Size.Width / columnLenght;
             _pictureBoxGrid = new List<List<PictureBoxWithLocation>>();
@@ -295,22 +290,17 @@ namespace Connect4New
             }
 
             WritePlayersData();
-            textBoxMessage.Text = Game.Player1.Name;
+            textBoxMessage.Text = _game.Player1.Name;
             pictureBoxTurn.Image = _colorChosenp1;
 
-            if (!IsExistingPlayer(Game.Player1.Name))
+            if (!IsExistingPlayer(_game.Player1.Name))
             {
-                listBoxPlayer1.Items.Add(Game.Player1.Name);
+                listBoxPlayer1.Items.Add(_game.Player1.Name);
             }
-            if (!IsExistingPlayer(Game.Player2.Name))
+            if (!IsExistingPlayer(_game.Player2.Name))
             {
-                listBoxPlayer2.Items.Add(Game.Player2.Name);
+                listBoxPlayer2.Items.Add(_game.Player2.Name);
             }
-        }
-
-        private void FreezeBoard()
-        {
-            panelGrid.Enabled = false;
         }
 
         private Image GetChosenColor(string color)
@@ -373,13 +363,19 @@ namespace Connect4New
                         var playerAndColor = splittedString[1].Split('-');
                         if (_isHost)
                         {
-                            listBoxPlayer2.Items.Insert(0, playerAndColor[0]);  // pune un if sa nu adauge acelasi nume de mai multe ori
+                            if (!listBoxPlayer2.Items.Contains(playerAndColor))
+                            {
+                                listBoxPlayer2.Items.Insert(0, playerAndColor[0]);
+                            }
                             this.listBoxPlayer2.SelectedItem = listBoxPlayer2.Items[0];
                             _colorChosenp2 = GetChosenColor(playerAndColor[1]);
                         }
                         else
                         {
-                            listBoxPlayer1.Items.Insert(0, playerAndColor[0]);
+                            if (!listBoxPlayer1.Items.Contains(playerAndColor))
+                            {
+                                listBoxPlayer1.Items.Insert(0, playerAndColor[0]);
+                            }
                             this.listBoxPlayer1.SelectedItem = listBoxPlayer1.Items[0];
                             _colorChosenp1 = GetChosenColor(playerAndColor[1]);
                         }
@@ -410,7 +406,7 @@ namespace Connect4New
             return listBoxPlayer1.Items.Contains(playerName) || listBoxPlayer2.Items.Contains(playerName);
         }
 
-        private void listBoxPlayer1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBoxPlayer1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbCuloarePlayer1.SelectedItem != null)
             {
@@ -418,7 +414,7 @@ namespace Connect4New
             }
         }
 
-        private void listBoxPlayer2_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBoxPlayer2_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbCuloarePlayer2.SelectedItem != null)
             {
@@ -426,19 +422,33 @@ namespace Connect4New
             }
         }
 
-        private void MakeMove(int currentColumnIndex)
+        private bool ValidateMove(int currentColumnIndex)
         {
-            int currentLineIndex = Game.UpdateGrid(currentColumnIndex);
+            if (!_isMyTurn)
+            {
+                MessageBox.Show("Not your turn.");
+                return false;
+            }
+
+            int currentLineIndex = _game.FindCorrectLine(currentColumnIndex);
+
             if (currentLineIndex == -1)
             {
                 MessageBox.Show(GameStatusMessage.GetInvalidMoveMessage(), "That column is full!");
-                _columnFull = true;
+                return false;
             }
             else
             {
-                var gameState = Game.GetNextState(Game.Grid[currentColumnIndex][currentLineIndex]);
-                UpdateGame(gameState, Game.Grid[currentColumnIndex][currentLineIndex]);
+                return true;
             }
+
+        }
+
+        private void MakeMove(int currentColumnIndex)
+        {
+            int currentLineIndex = _game.UpdateGrid(currentColumnIndex);
+            var gameState = _game.GetNextState(_game.Grid[currentColumnIndex][currentLineIndex]);
+            UpdateGame(gameState, _game.Grid[currentColumnIndex][currentLineIndex]);
         }
 
         private void MessageReceiver_DoWork(object sender, DoWorkEventArgs e)
@@ -460,7 +470,16 @@ namespace Connect4New
             ASCIIEncoding encoder = new ASCIIEncoding();
             byte[] buffer = encoder.GetBytes(msg);
             _socket.Send(buffer, buffer.Length, SocketFlags.None);
-            _messageReceiver.RunWorkerAsync();
+            if (!_messageReceiver.IsBusy)
+                _messageReceiver.RunWorkerAsync();
+            else
+                MessageBox.Show("Can't run the worker twice!");
+        }
+
+
+        private void FreezeBoard()
+        {
+            panelGrid.Enabled = false;
         }
 
         private void UnfreezeBoard()
@@ -473,7 +492,15 @@ namespace Connect4New
             _imAwaiting = false;
             _isAwaiting = false;
             buttonStart.Enabled = true;
+           
+            if (_messageReceiver.IsBusy)
+            {
+                _messageReceiver.CancelAsync();
+                MessageBox.Show("I'M BUSY");
+            }
+           
         }
+
         private void UpdateDraw(Connect4Cell cell)
         {
             _pictureBoxGrid[cell.ColumnIndex][cell.LineIndex].Image = cell.State == 1 ? _colorChosenp1 : _colorChosenp2;
@@ -486,49 +513,49 @@ namespace Connect4New
                 case State.TurnPlayer1:
                     {
                         UpdateDraw(cell);
-                        textBoxMessage.Text = Game.Player1.Name;
+                        textBoxMessage.Text = _game.Player1.Name;
                         pictureBoxTurn.Image = _colorChosenp1;
                         break;
                     }
                 case State.TurnPlayer2:
                     {
                         UpdateDraw(cell);
-                        textBoxMessage.Text = Game.Player2.Name;
+                        textBoxMessage.Text = _game.Player2.Name;
                         pictureBoxTurn.Image = _colorChosenp2;
                         break;
                     }
                 case State.WinPlayer1:
                     {
                         UpdateDraw(cell);
-                        textBoxMessage.Text = GameStatusMessage.GetWin(Game.Player1.Name);
+                        textBoxMessage.Text = GameStatusMessage.GetWin(_game.Player1.Name);
                         WritePlayersData();
-                        panelGrid.Enabled = false;
-                        AfterGameReset();
+                        FreezeBoard();
                         if (_isHost)
                         {
-                            MessageBox.Show($"Congratulations, you won {Game.Player1.Name}", "WINNER");
+                            MessageBox.Show($"Congratulations, you won {_game.Player1.Name}", "WINNER");
                         }
                         else
                         {
-                            MessageBox.Show($"Aww no, you lost {Game.Player2.Name}","LOSER");
+                            MessageBox.Show($"Aww no, you lost {_game.Player2.Name}","LOSER");
                         }
+                        AfterGameReset();
                         break;
                     }
                 case State.WinPlayer2:
                     {
                         UpdateDraw(cell);
-                        textBoxMessage.Text = GameStatusMessage.GetWin(Game.Player2.Name);
+                        textBoxMessage.Text = GameStatusMessage.GetWin(_game.Player2.Name);
                         WritePlayersData();
-                        panelGrid.Enabled = false;
-                        AfterGameReset();
+                        FreezeBoard();
                         if (_isHost)
                         {
-                            MessageBox.Show($"Aww no, you lost {Game.Player1.Name}", "LOSER");
+                            MessageBox.Show($"Aww no, you lost {_game.Player1.Name}", "LOSER");
                         }
                         else
                         {
-                            MessageBox.Show($"Congratulations, you won {Game.Player2.Name}", "WINNER");
+                            MessageBox.Show($"Congratulations, you won {_game.Player2.Name}", "WINNER");
                         }
+                        AfterGameReset();
                         break;
                     }
                 case State.Draw:
@@ -536,7 +563,7 @@ namespace Connect4New
                         UpdateDraw(cell);
                         WritePlayersData();
                         MessageBox.Show(GameStatusMessage.GetDraw());
-                        panelGrid.Enabled = false;
+                        FreezeBoard();
                         AfterGameReset();
                         break;
                     }
@@ -545,16 +572,16 @@ namespace Connect4New
 
         private void WritePlayersData()
         {
-            textBoxPlayer1Name.Text = Game.Player1.Name;
-            textBoxPlayer2Name.Text = Game.Player2.Name;
-            textBoxPlayer1Matches.Text = Convert.ToString(Game.Player1.Statistics.Matches);
-            textBoxPlayer1Victories.Text = Convert.ToString(Game.Player1.Statistics.Victories);
-            textBoxPlayer2Matches.Text = Convert.ToString(Game.Player2.Statistics.Matches);
-            textBoxPlayer2Victories.Text = Convert.ToString(Game.Player2.Statistics.Victories);
+            textBoxPlayer1Name.Text = _game.Player1.Name;
+            textBoxPlayer2Name.Text = _game.Player2.Name;
+            textBoxPlayer1Matches.Text = Convert.ToString(_game.Player1.Statistics.Matches);
+            textBoxPlayer1Victories.Text = Convert.ToString(_game.Player1.Statistics.Victories);
+            textBoxPlayer2Matches.Text = Convert.ToString(_game.Player2.Statistics.Matches);
+            textBoxPlayer2Victories.Text = Convert.ToString(_game.Player2.Statistics.Victories);
         }
+
 
         #endregion Private Methods
 
-      
     }
 }
