@@ -1,5 +1,9 @@
-﻿using System;
+﻿
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Windows.Forms;
+
 
 namespace Connect4New
 {
@@ -16,9 +20,9 @@ namespace Connect4New
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new StartupForm());
         }
-
+        
         #endregion Private Methods
 
     }

@@ -6,7 +6,7 @@ namespace Connect4New
     {
         #region Public Methods
 
-        public static bool ColumnWin(List<List<Cell>> grid, Cell cell)
+        public static bool ColumnWin(List<List<Connect4Cell>> grid, Connect4Cell cell)
         {
             for (int lineIndex = cell.LineIndex - 3; lineIndex < cell.LineIndex + 3; lineIndex++)
             {
@@ -27,7 +27,7 @@ namespace Connect4New
             return false;
         }
 
-        public static bool Draw(List<List<Cell>> grid)
+        public static bool Draw(List<List<Connect4Cell>> grid)
         {
             for (int columnIndex = 0; columnIndex < grid.Count; columnIndex++)
             {
@@ -40,7 +40,7 @@ namespace Connect4New
             return true;
         }
 
-        public static bool LineWin(List<List<Cell>> grid, Cell cell)
+        public static bool LineWin(List<List<Connect4Cell>> grid, Connect4Cell cell)
         {
             for (int columnIndex = cell.ColumnIndex - 3; columnIndex < cell.ColumnIndex + 3; columnIndex++)
             {
@@ -61,7 +61,7 @@ namespace Connect4New
             return false;
         }
 
-        public static bool MainDiagonalWin(List<List<Cell>> grid, Cell cell)
+        public static bool MainDiagonalWin(List<List<Connect4Cell>> grid, Connect4Cell cell)
         {
             for (int lineIndex = cell.LineIndex - 3, columnIndex = cell.ColumnIndex - 3; lineIndex < cell.LineIndex + 3 && columnIndex < cell.ColumnIndex + 3; lineIndex++, columnIndex++)
             {
@@ -82,7 +82,7 @@ namespace Connect4New
             return false;
         }
 
-        public static bool SecondaryDiagonalWin(List<List<Cell>> grid, Cell cell)
+        public static bool SecondaryDiagonalWin(List<List<Connect4Cell>> grid, Connect4Cell cell)
         {
             for (int lineIndex = cell.LineIndex + 3, columnIndex = cell.ColumnIndex - 3; lineIndex > cell.LineIndex - 3 && columnIndex < cell.ColumnIndex + 3; lineIndex--, columnIndex++)
             {
@@ -103,7 +103,7 @@ namespace Connect4New
             return false;
         }
 
-        public static bool ValidColumn(List<List<Cell>> grid, int column)
+        public static bool ValidColumn(List<List<Connect4Cell>> grid, int column)
         {
             int line = 0;
             if (grid[column][line].State == 0)
