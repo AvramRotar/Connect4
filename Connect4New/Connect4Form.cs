@@ -31,11 +31,11 @@ namespace Connect4New
         private bool _isAwaiting = false;
 
         private BackgroundWorker _messageReceiver = new BackgroundWorker();
-       
+
         private Socket _socket;
 
         private List<List<PictureBoxWithLocation>> _pictureBoxGrid;
-       
+
         #endregion Private Fields
 
         #region Public Constructors
@@ -43,9 +43,8 @@ namespace Connect4New
         public Connect4Form(bool isHost)
         {
             InitializeComponent();
-           // _board = new Connect4Board();
             _game = new Game();
-            this._isHost = isHost; // assign the parameter isHost to the field _isHost for this instance
+            this._isHost = isHost;
             CheckForIllegalCrossThreadCalls = false;
             pictureBoxTurn.Image = Images.White;
             textBoxMessage.Text = "Add a player and select a color";
@@ -53,13 +52,8 @@ namespace Connect4New
             _messageReceiver.WorkerSupportsCancellation = true;
         }
 
-        #endregion Public Constructors
+        #endregion Public Constructors 
 
-        #region Private Delegates
-
-        private delegate bool StateChecker();
-
-        #endregion
 
         #region Public Delegates
 
@@ -116,7 +110,6 @@ namespace Connect4New
 
         public void StartGame(string p1, string p2)
         {
-            // Game = new Game(GetOrAddPlayer(p1), GetOrAddPlayer(p2));
             _game.InitGame(_game.GetOrAddPlayer(p1), _game.GetOrAddPlayer(p2));
         }
         public void StartConnection(string adressIp, string port)
@@ -163,7 +156,7 @@ namespace Connect4New
         private void buttonAddPlayerToFirstList_Click(object sender, EventArgs e)  //Adauga un jucator in lista de afisare din stanga
         {
             string nameToFind = textBoxPlayer1NewName.Text;
-            nameToFind =_game.GetOrAddPlayer(nameToFind).Name;
+            nameToFind = _game.GetOrAddPlayer(nameToFind).Name;
             if (!listBoxPlayer1.Items.Contains(nameToFind))
             {
                 listBoxPlayer1.Items.Add(nameToFind);
@@ -396,8 +389,8 @@ namespace Connect4New
 
                         break;
                     }
-                  default:
-                  break;
+                default:
+                    break;
             }
         }
 
@@ -453,8 +446,33 @@ namespace Connect4New
 
         private void MessageReceiver_DoWork(object sender, DoWorkEventArgs e)
         {
-            ReceiveMessage();
-            UnfreezeBoard();
+            while (true)
+            {
+
+                try
+                {
+                    ReceiveMessage();
+                    UnfreezeBoard();
+                }
+
+                catch (System.IO.IOException ex)
+                {
+                    SocketException socketex = (SocketException)ex.InnerException;
+                    switch (socketex.ErrorCode)
+                    {
+                        case 10054:
+                            // server disconnected
+                            MessageBox.Show(socketex.Message, "Server disappeared");
+                            return;
+                        case 10060:
+                            // timeout
+                            break;
+                        default:
+                            MessageBox.Show(socketex.Message, "Socket error " + socketex.ErrorCode);
+                            return;
+                    }
+                }
+            }
         }
 
         private void ReceiveMessage()
@@ -470,12 +488,13 @@ namespace Connect4New
             ASCIIEncoding encoder = new ASCIIEncoding();
             byte[] buffer = encoder.GetBytes(msg);
             _socket.Send(buffer, buffer.Length, SocketFlags.None);
-            if (!_messageReceiver.IsBusy)
-                _messageReceiver.RunWorkerAsync();
-            else
-                MessageBox.Show("Can't run the worker twice!");
-        }
 
+            if (!_messageReceiver.IsBusy)      // ASTA FACE SA NU MAI APARA EXCEPTIA 
+            {
+                _messageReceiver.RunWorkerAsync();
+
+            }
+        }
 
         private void FreezeBoard()
         {
@@ -492,13 +511,6 @@ namespace Connect4New
             _imAwaiting = false;
             _isAwaiting = false;
             buttonStart.Enabled = true;
-           
-            if (_messageReceiver.IsBusy)
-            {
-                _messageReceiver.CancelAsync();
-                MessageBox.Show("I'M BUSY");
-            }
-           
         }
 
         private void UpdateDraw(Connect4Cell cell)
@@ -536,7 +548,7 @@ namespace Connect4New
                         }
                         else
                         {
-                            MessageBox.Show($"Aww no, you lost {_game.Player2.Name}","LOSER");
+                            MessageBox.Show($"Aww no, you lost {_game.Player2.Name}", "LOSER");
                         }
                         AfterGameReset();
                         break;
