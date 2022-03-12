@@ -55,6 +55,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.checkBoxDebugMode = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTurn)).BeginInit();
             this.SuspendLayout();
             // 
@@ -319,11 +320,22 @@
             this.label6.TabIndex = 38;
             this.label6.Text = "label6";
             // 
+            // checkBoxDebugMode
+            // 
+            this.checkBoxDebugMode.AutoSize = true;
+            this.checkBoxDebugMode.Location = new System.Drawing.Point(357, 10);
+            this.checkBoxDebugMode.Name = "checkBoxDebugMode";
+            this.checkBoxDebugMode.Size = new System.Drawing.Size(88, 17);
+            this.checkBoxDebugMode.TabIndex = 39;
+            this.checkBoxDebugMode.Text = "Debug Mode";
+            this.checkBoxDebugMode.UseVisualStyleBackColor = true;
+            // 
             // Connect4Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(845, 554);
+            this.Controls.Add(this.checkBoxDebugMode);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -354,6 +366,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Connect4Form";
             this.Text = "CONNECT 4  ";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Connect4Form_FormClosing);
             this.Load += new System.EventHandler(this.Connect4Form_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTurn)).EndInit();
             this.ResumeLayout(false);
@@ -390,6 +403,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox checkBoxDebugMode;
     }
 }
 

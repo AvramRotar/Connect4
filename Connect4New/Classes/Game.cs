@@ -12,7 +12,7 @@ namespace Connect4New
         {
             _players = new List<Player>();
             _rnd = new Random();
-            
+            Turn = -1;
         }
 
         #endregion Public Constructors
@@ -25,7 +25,7 @@ namespace Connect4New
 
         public Player Player2 { get; set; }
 
-        public int Turn { get; private set; }
+        public int Turn { get; private set; } 
 
         #endregion Public Properties
 
@@ -41,7 +41,7 @@ namespace Connect4New
         {
             Player1 = p1;
             Player2 = p2;
-            Turn = 1;
+            Turn *= -1;
             _board = new Connect4Board();
         }
 

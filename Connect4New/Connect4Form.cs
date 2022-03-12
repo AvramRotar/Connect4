@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Threading;
 
@@ -48,12 +49,12 @@ namespace Connect4New
             CheckForIllegalCrossThreadCalls = false;
             pictureBoxTurn.Image = Images.White;
             textBoxMessage.Text = "Add a player and select a color";
-            _messageReceiver.DoWork += MessageReceiver_DoWork;
             _messageReceiver.WorkerSupportsCancellation = true;
+            _messageReceiver.DoWork += MessageReceiver_DoWork;
+            _messageReceiver.RunWorkerCompleted += MessageReceiver_RunWorkerCompleted;
         }
 
         #endregion Public Constructors 
-
 
         #region Public Delegates
 
@@ -112,6 +113,7 @@ namespace Connect4New
         {
             _game.InitGame(_game.GetOrAddPlayer(p1), _game.GetOrAddPlayer(p2));
         }
+
         public void StartConnection(string adressIp, string port)
         {
             TcpListener server = null;
@@ -194,6 +196,16 @@ namespace Connect4New
             }
 
             buttonStart.Enabled = false;
+            if (_isHost)
+            {
+                buttonAddPlayer1.Enabled = false;
+                cbCuloarePlayer1.Enabled = false;
+            }
+            else
+            {
+                buttonAddPlayer2.Enabled = false;
+                cbCuloarePlayer2.Enabled = false;
+            }
         }
 
         private void cbCuloarePlayer1_SelectedIndexChanged(object sender, EventArgs e)
@@ -234,7 +246,7 @@ namespace Connect4New
         {
             _currentColumnIndex = ((PictureBoxWithLocation)sender).ColumnIndex;
 
-            if (ValidateMove(_currentColumnIndex) == true)
+            if (ValidateMove(_currentColumnIndex))
             {
                 MakeMove(_currentColumnIndex);
                 FreezeBoard();
@@ -246,6 +258,8 @@ namespace Connect4New
         {
             buttonStart.Enabled = false;
         }
+
+
 
         private void DrawBoard()//Deseneaza tabla de joc
         {
@@ -283,8 +297,17 @@ namespace Connect4New
             }
 
             WritePlayersData();
-            textBoxMessage.Text = _game.Player1.Name;
-            pictureBoxTurn.Image = _colorChosenp1;
+
+            if (_game.Turn == 1)
+            {
+                textBoxMessage.Text = _game.Player1.Name;
+                pictureBoxTurn.Image = _colorChosenp1;
+            }
+            else
+            {
+                textBoxMessage.Text = _game.Player2.Name;
+                pictureBoxTurn.Image = _colorChosenp2;
+            }
 
             if (!IsExistingPlayer(_game.Player1.Name))
             {
@@ -344,10 +367,18 @@ namespace Connect4New
             {
                 case "move":
                     {
-                        var columnIndex = Convert.ToInt32(splittedString[1]);
-                        MakeMove(columnIndex);
-                        UnfreezeBoard();
-                        break;
+                        try
+                        {
+                            var columnIndex = Convert.ToInt32(splittedString[1]);
+                            MakeMove(columnIndex);
+                            UnfreezeBoard();
+                            break;
+                        }
+                        catch (System.FormatException ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                            break;
+                        }
                     }
 
                 case "iStarted":
@@ -356,20 +387,23 @@ namespace Connect4New
                         var playerAndColor = splittedString[1].Split('-');
                         if (_isHost)
                         {
-                            if (!listBoxPlayer2.Items.Contains(playerAndColor))
+                            if (!listBoxPlayer2.Items.Contains(playerAndColor[0]))
                             {
                                 listBoxPlayer2.Items.Insert(0, playerAndColor[0]);
                             }
                             this.listBoxPlayer2.SelectedItem = listBoxPlayer2.Items[0];
+                            cbCuloarePlayer2.Text = playerAndColor[1];
                             _colorChosenp2 = GetChosenColor(playerAndColor[1]);
+
                         }
                         else
                         {
-                            if (!listBoxPlayer1.Items.Contains(playerAndColor))
+                            if (!listBoxPlayer1.Items.Contains(playerAndColor[0]))
                             {
                                 listBoxPlayer1.Items.Insert(0, playerAndColor[0]);
                             }
                             this.listBoxPlayer1.SelectedItem = listBoxPlayer1.Items[0];
+                            cbCuloarePlayer1.Text = playerAndColor[1];
                             _colorChosenp1 = GetChosenColor(playerAndColor[1]);
                         }
 
@@ -446,33 +480,31 @@ namespace Connect4New
 
         private void MessageReceiver_DoWork(object sender, DoWorkEventArgs e)
         {
-            while (true)
+            ReceiveMessage();
+            UnfreezeBoard();
+        }
+
+        private void MessageReceiver_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (checkBoxDebugMode.Checked)
             {
-
-                try
+                if (_isHost)
                 {
-                    ReceiveMessage();
-                    UnfreezeBoard();
+                    MessageBox.Show("Host. I'm done");
                 }
-
-                catch (System.IO.IOException ex)
+                else
                 {
-                    SocketException socketex = (SocketException)ex.InnerException;
-                    switch (socketex.ErrorCode)
-                    {
-                        case 10054:
-                            // server disconnected
-                            MessageBox.Show(socketex.Message, "Server disappeared");
-                            return;
-                        case 10060:
-                            // timeout
-                            break;
-                        default:
-                            MessageBox.Show(socketex.Message, "Socket error " + socketex.ErrorCode);
-                            return;
-                    }
+                    MessageBox.Show("Client. I'm done");
                 }
             }
+
+            _messageReceiver.RunWorkerAsync();
+
+            if (checkBoxDebugMode.Checked)
+            {
+                MessageBox.Show(". I run again");
+            }
+
         }
 
         private void ReceiveMessage()
@@ -488,11 +520,9 @@ namespace Connect4New
             ASCIIEncoding encoder = new ASCIIEncoding();
             byte[] buffer = encoder.GetBytes(msg);
             _socket.Send(buffer, buffer.Length, SocketFlags.None);
-
-            if (!_messageReceiver.IsBusy)      // ASTA FACE SA NU MAI APARA EXCEPTIA 
+            if (!_messageReceiver.IsBusy)      // ASTA FACE SA NU MAI APARA EXCEPTIA . 
             {
                 _messageReceiver.RunWorkerAsync();
-
             }
         }
 
@@ -511,6 +541,16 @@ namespace Connect4New
             _imAwaiting = false;
             _isAwaiting = false;
             buttonStart.Enabled = true;
+            if (_isHost)
+            {
+                buttonAddPlayer1.Enabled = true;
+                cbCuloarePlayer1.Enabled = true;
+            }
+            else
+            {
+                buttonAddPlayer2.Enabled = true;
+                cbCuloarePlayer2.Enabled = true;
+            }
         }
 
         private void UpdateDraw(Connect4Cell cell)
@@ -592,8 +632,23 @@ namespace Connect4New
             textBoxPlayer2Victories.Text = Convert.ToString(_game.Player2.Statistics.Victories);
         }
 
-
         #endregion Private Methods
+
+        private void Connect4Form_FormClosing(object sender, FormClosingEventArgs e)  
+        {
+            //  _messageReceiver.CancelAsync();   Sa verific daca BW is busy si sa-l inchid.
+
+            //try
+            //{
+            //    _client.GetStream().Close();
+            //    _client.GetStream().Dispose();
+            //    _client.Close();
+            //}
+            //catch (System.InvalidOperationException ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+        }
 
     }
 }
