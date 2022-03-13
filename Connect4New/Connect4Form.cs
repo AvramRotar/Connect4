@@ -383,6 +383,8 @@ namespace Connect4New
 
                 case "iStarted":
                     {
+                        string nameToSelect;
+                        int index = 0;
                         _isAwaiting = true;
                         var playerAndColor = splittedString[1].Split('-');
                         if (_isHost)
@@ -391,8 +393,11 @@ namespace Connect4New
                             {
                                 listBoxPlayer2.Items.Insert(0, playerAndColor[0]);
                             }
-                            this.listBoxPlayer2.SelectedItem = listBoxPlayer2.Items[0];
-                            cbCuloarePlayer2.Text = playerAndColor[1];
+                            nameToSelect = playerAndColor[0];
+                            index = listBoxPlayer2.FindString(nameToSelect);
+                            listBoxPlayer2.SetSelected(index, true);
+
+                             cbCuloarePlayer2.Text = playerAndColor[1];
                             _colorChosenp2 = GetChosenColor(playerAndColor[1]);
 
                         }
@@ -402,7 +407,10 @@ namespace Connect4New
                             {
                                 listBoxPlayer1.Items.Insert(0, playerAndColor[0]);
                             }
-                            this.listBoxPlayer1.SelectedItem = listBoxPlayer1.Items[0];
+                            nameToSelect = playerAndColor[0];
+                            index = listBoxPlayer1.FindString(nameToSelect);
+                            listBoxPlayer1.SetSelected(index, true);
+
                             cbCuloarePlayer1.Text = playerAndColor[1];
                             _colorChosenp1 = GetChosenColor(playerAndColor[1]);
                         }
